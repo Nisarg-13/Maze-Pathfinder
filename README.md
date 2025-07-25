@@ -185,6 +185,12 @@ maze-pathfinder/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 🌐 Live Demo
+
+The application is deployed and available at:
+- **Frontend**: Vercel
+- **Backend**: Railway
+
 ## 🙏 Acknowledgments
 
 - A* algorithm implementation inspired by classic pathfinding research
