@@ -9,6 +9,8 @@
     "start": "next start",
     "server": "tsx server.ts",
     "server:dev": "tsx watch server.ts",
+    "server:build": "tsc server.ts --outDir dist --target es2020 --module es2020 --moduleResolution node --esModuleInterop --allowSyntheticDefaultImports",
+    "server:prod": "node dist/server.js",
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",

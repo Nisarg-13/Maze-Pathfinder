@@ -3,8 +3,36 @@ import { createServer } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { astar, Point, AstarResult } from "./lib/astar";
 
-const server = createServer();
-const wss = new WebSocketServer({ server });
+const server = createServer((req, res) => {
+  // Health check endpoint
+  if (req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok', timestamp: new Date().toISOString() }));
+    return;
+  }
+  
+  // CORS headers for all requests
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200);
+    res.end();
+    return;
+  }
+  
+  res.writeHead(404);
+  res.end('Not Found');
+});
+
+const wss = new WebSocketServer({ 
+  server,
+  cors: {
+    origin: "*",
+    credentials: true
+  }
+});
 
 interface SolveMessage {
   type: "solve";
@@ -178,6 +206,8 @@ wss.on("connection", (ws: WebSocket) => {
   });
 });
 
-server.listen(8080, () => {
-  console.log("WebSocket server running on ws://localhost:8080");
+const PORT = process.env.PORT || 8080;
+
+server.listen(PORT, () => {
+  console.log(`WebSocket server running on port ${PORT}`);
 });
