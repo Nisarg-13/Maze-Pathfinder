@@ -27,11 +27,7 @@ const server = createServer((req, res) => {
 });
 
 const wss = new WebSocketServer({ 
-  server,
-  cors: {
-    origin: "*",
-    credentials: true
-  }
+  server
 });
 
 interface SolveMessage {
