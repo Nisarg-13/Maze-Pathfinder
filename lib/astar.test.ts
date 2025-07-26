@@ -1,4 +1,4 @@
-import { astar, Point, AstarResult } from "./astar";
+import { astar, Point } from "./astar";
 
 describe("A* Algorithm", () => {
   describe("Basic Pathfinding", () => {

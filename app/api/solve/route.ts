@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { astar, Point } from "@/lib/astar";
+import { astar } from "@/lib/astar";
 
 export async function POST(request: NextRequest) {
   try {
