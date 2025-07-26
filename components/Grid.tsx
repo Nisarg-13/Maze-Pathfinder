@@ -437,28 +437,28 @@ export default function MazeGrid() {
   };
 
   return (
-    <div className="h-screen w-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col overflow-hidden">
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
       {/* Header */}
       <div className="bg-black/20 backdrop-blur-sm border-b border-white/10 flex-shrink-0">
-        <div className="w-full px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="w-full px-3 sm:px-6 py-2 sm:py-4">
+          <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 xs:gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+              <h1 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                 Maze Pathfinder
               </h1>
             </div>
 
             {/* Stats */}
-            <div className="flex gap-3 sm:gap-6">
+            <div className="flex gap-2 xs:gap-3 sm:gap-6">
               <div className="text-center bg-black/30 rounded-lg px-2 sm:px-4 py-1 sm:py-2 border border-white/10">
-                <p className="text-gray-400 text-xs sm:text-sm">Path Length</p>
-                <p className={`font-bold text-lg sm:text-xl ${pathLength === 0 && solvingState === "completed" ? "text-red-400" : "text-cyan-400"}`}>
+                <p className="text-gray-400 text-xs">Path Length</p>
+                <p className={`font-bold text-sm xs:text-lg sm:text-xl ${pathLength === 0 && solvingState === "completed" ? "text-red-400" : "text-cyan-400"}`}>
                   {pathLength === 0 && solvingState === "completed" ? "Not Found" : pathLength}
                 </p>
               </div>
               <div className="text-center bg-black/30 rounded-lg px-2 sm:px-4 py-1 sm:py-2 border border-white/10">
-                <p className="text-gray-400 text-xs sm:text-sm">Visited Nodes</p>
-                <p className="text-yellow-400 font-bold text-lg sm:text-xl">
+                <p className="text-gray-400 text-xs">Visited Nodes</p>
+                <p className="text-yellow-400 font-bold text-sm xs:text-lg sm:text-xl">
                   {visitedCount}
                 </p>
               </div>
@@ -468,67 +468,67 @@ export default function MazeGrid() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+      <div className="flex-1 flex flex-col xl:flex-row min-h-0">
         {/* Sidebar */}
-        <div className="w-full lg:w-80 xl:w-96 bg-black/20 backdrop-blur-sm border-b lg:border-b-0 lg:border-r border-white/10 p-3 sm:p-4 lg:p-6 overflow-y-auto flex-shrink-0">
-          <div className="space-y-4 lg:space-y-6">
+        <div className="w-full xl:w-80 2xl:w-96 bg-black/20 backdrop-blur-sm border-b xl:border-b-0 xl:border-r border-white/10 p-3 sm:p-4 xl:p-6 xl:overflow-y-auto flex-shrink-0">
+          <div className="space-y-3 xl:space-y-6">
             <div>
-              <h3 className="text-lg lg:text-xl font-semibold text-white mb-3 lg:mb-4">
+              <h3 className="text-base sm:text-lg xl:text-xl font-semibold text-white mb-2 sm:mb-3 xl:mb-4">
                 Controls
               </h3>
-              <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 lg:gap-3">
+              <div className="grid grid-cols-4 xl:grid-cols-1 gap-2 xl:gap-3">
                 <button
-                  className={`w-full px-2 sm:px-3 lg:px-4 py-2 lg:py-3 rounded-lg text-sm lg:text-base font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
+                  className={`w-full px-2 sm:px-3 xl:px-4 py-2 xl:py-3 rounded-lg text-xs sm:text-sm xl:text-base font-medium transition-all duration-300 flex items-center justify-center gap-1 xl:gap-2 ${
                     mode === "start"
                       ? "bg-green-600 text-white border-2 border-green-500 shadow-lg shadow-green-500/25"
                       : "bg-gray-800 text-gray-300 hover:bg-green-600/20 hover:text-green-400 border border-gray-600"
                   }`}
                   onClick={() => setMode(mode === "start" ? null : "start")}
                 >
-                  <span className="hidden sm:inline lg:inline">Set Start Point</span>
-                  <span className="sm:hidden">Start</span>
+                  <span className="hidden sm:inline xl:inline">Set Start Point</span>
+                  <span className="sm:hidden xl:hidden">Start</span>
                 </button>
 
                 <button
-                  className={`w-full px-2 sm:px-3 lg:px-4 py-2 lg:py-3 rounded-lg text-sm lg:text-base font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
+                  className={`w-full px-2 sm:px-3 xl:px-4 py-2 xl:py-3 rounded-lg text-xs sm:text-sm xl:text-base font-medium transition-all duration-300 flex items-center justify-center gap-1 xl:gap-2 ${
                     mode === "goal"
                       ? "bg-red-600 text-white border-2 border-red-500 shadow-lg shadow-red-500/25"
                       : "bg-gray-800 text-gray-300 hover:bg-red-600/20 hover:text-red-400 border border-gray-600"
                   }`}
                   onClick={() => setMode(mode === "goal" ? null : "goal")}
                 >
-                  <span className="hidden sm:inline lg:inline">Set Goal Point</span>
-                  <span className="sm:hidden">Goal</span>
+                  <span className="hidden sm:inline xl:inline">Set Goal Point</span>
+                  <span className="sm:hidden xl:hidden">Goal</span>
                 </button>
 
                 <button
-                  className={`w-full px-2 sm:px-3 lg:px-4 py-2 lg:py-3 rounded-lg text-sm lg:text-base font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
+                  className={`w-full px-2 sm:px-3 xl:px-4 py-2 xl:py-3 rounded-lg text-xs sm:text-sm xl:text-base font-medium transition-all duration-300 flex items-center justify-center gap-1 xl:gap-2 ${
                     mode === null
                       ? "bg-blue-600 text-white border-2 border-blue-500 shadow-lg shadow-blue-500/25"
                       : "bg-gray-800 text-gray-300 hover:bg-blue-600/20 hover:text-blue-400 border border-gray-600"
                   }`}
                   onClick={() => setMode(null)}
                 >
-                  <span className="hidden sm:inline lg:inline">Draw Walls</span>
-                  <span className="sm:hidden">Walls</span>
+                  <span className="hidden sm:inline xl:inline">Draw Walls</span>
+                  <span className="sm:hidden xl:hidden">Walls</span>
                 </button>
 
                 <button
-                  className="w-full px-2 sm:px-3 lg:px-4 py-2 lg:py-3 rounded-lg text-sm lg:text-base font-medium bg-orange-600 text-white hover:bg-orange-700 transition-all duration-300 flex items-center justify-center gap-2 border border-orange-500 shadow-lg shadow-orange-500/25"
+                  className="w-full px-2 sm:px-3 xl:px-4 py-2 xl:py-3 rounded-lg text-xs sm:text-sm xl:text-base font-medium bg-orange-600 text-white hover:bg-orange-700 transition-all duration-300 flex items-center justify-center gap-1 xl:gap-2 border border-orange-500 shadow-lg shadow-orange-500/25"
                   onClick={onClearGrid}
                 >
-                  <span className="hidden sm:inline lg:inline">Clear Grid</span>
-                  <span className="sm:hidden">Clear</span>
+                  <span className="hidden sm:inline xl:inline">Clear Grid</span>
+                  <span className="sm:hidden xl:hidden">Clear</span>
                 </button>
               </div>
             </div>
 
-            <div className="border-t border-white/10 pt-4 lg:pt-6 space-y-3">
+            <div className="border-t border-white/10 pt-3 xl:pt-6 space-y-2 xl:space-y-3">
               {/* Solve/Restart Button */}
               <button
                 onClick={onSolveOrRestart}
                 disabled={solvingState === "solving"}
-                className={`w-full px-4 lg:px-6 py-3 lg:py-4 rounded-lg font-semibold text-base lg:text-lg transition-all duration-300 flex items-center justify-center gap-3 ${
+                className={`w-full px-3 sm:px-4 xl:px-6 py-2 sm:py-3 xl:py-4 rounded-lg font-semibold text-sm sm:text-base xl:text-lg transition-all duration-300 flex items-center justify-center gap-2 xl:gap-3 ${
                   solvingState === "solving"
                     ? "bg-gray-600 text-gray-400 cursor-not-allowed border border-gray-500"
                     : solvingState === "paused"
@@ -538,7 +538,7 @@ export default function MazeGrid() {
               >
                 {solvingState === "solving" ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
                     <span>Solving...</span>
                   </>
                 ) : solvingState === "paused" ? (
@@ -556,7 +556,7 @@ export default function MazeGrid() {
               <button
                 onClick={onToggleSolving}
                 disabled={solvingState === "idle" || solvingState === "completed"}
-                className={`w-full px-4 lg:px-6 py-2 lg:py-3 rounded-lg font-semibold text-sm lg:text-base transition-all duration-300 flex items-center justify-center gap-3 ${
+                className={`w-full px-3 sm:px-4 xl:px-6 py-2 xl:py-3 rounded-lg font-semibold text-xs sm:text-sm xl:text-base transition-all duration-300 flex items-center justify-center gap-2 xl:gap-3 ${
                   solvingState === "solving"
                     ? "bg-red-600 text-white hover:bg-red-700 border-2 border-red-500 shadow-lg shadow-red-500/25"
                     : solvingState === "paused"
@@ -581,12 +581,12 @@ export default function MazeGrid() {
             </div>
 
             {/* Animation Speed Control */}
-            <div className="bg-black/30 rounded-xl p-3 lg:p-4 border border-white/10">
-              <h4 className="text-white font-semibold mb-2 lg:mb-3 text-sm lg:text-base">Animation Speed</h4>
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm text-gray-300">
+            <div className="bg-black/30 rounded-xl p-3 xl:p-4 border border-white/10">
+              <h4 className="text-white font-semibold mb-2 xl:mb-3 text-sm xl:text-base">Animation Speed</h4>
+              <div className="space-y-2 xl:space-y-3">
+                <div className="flex justify-between text-xs xl:text-sm text-gray-300">
                   <span>Fast</span>
-                  <span>{animationSpeed}ms</span>
+                  <span className="text-xs">{animationSpeed}ms</span>
                   <span>Slow</span>
                 </div>
                 <input
@@ -599,13 +599,14 @@ export default function MazeGrid() {
                   disabled={isAnimating}
                   className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer disabled:cursor-not-allowed slider"
                 />
-                <div className="text-xs text-gray-400 mt-2">
+                <div className="text-xs text-gray-400">
                   Max timeout: {Math.round(Math.max(60000, (400 * animationSpeed) + 30000) / 1000)}s
                 </div>
               </div>
             </div>
 
-            <div className="bg-black/30 rounded-xl p-4 border border-white/10">
+            {/* Legend - Hide on small screens, show on xl+ */}
+            <div className="hidden xl:block bg-black/30 rounded-xl p-4 border border-white/10">
               <h4 className="text-white font-semibold mb-3">Legend</h4>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-3">
@@ -634,23 +635,31 @@ export default function MazeGrid() {
         </div>
 
         {/* Grid Area */}
-        <div className="flex-1 flex items-center justify-center p-2 sm:p-4 lg:p-8 overflow-hidden">
-          <div className="bg-black/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-2 sm:p-4 lg:p-8 border border-white/10 shadow-2xl flex items-center justify-center">
-            <div className="grid-cols-20 bg-gray-900/50 p-2 sm:p-3 lg:p-4 rounded-lg lg:rounded-xl" style={{ width: 'min(85vw, 85vh)', height: 'min(85vw, 85vh)' }}>
+        <div className="flex-1 flex items-center justify-center p-2 sm:p-4 xl:p-8 min-h-0">
+          <div className="bg-black/20 backdrop-blur-sm rounded-xl xl:rounded-2xl p-2 sm:p-4 xl:p-8 border border-white/10 shadow-2xl flex items-center justify-center w-full h-full">
+            <div 
+              className="grid-cols-20 bg-gray-900/50 p-2 sm:p-3 xl:p-4 rounded-lg xl:rounded-xl touch-manipulation" 
+              style={{ 
+                width: 'min(90vw, calc(100vh - 200px), 600px)', 
+                height: 'min(90vw, calc(100vh - 200px), 600px)',
+                maxWidth: '90vw',
+                maxHeight: 'calc(100vh - 200px)'
+              }}
+            >
               {Array.from({ length: GRID_SIZE }, (_, r) =>
                 Array.from({ length: GRID_SIZE }, (_, c) => {
                   const cell = grid[r][c];
-                  let bgColor = "bg-gray-100 hover:bg-gray-200";
+                  let bgColor = "bg-gray-100 hover:bg-gray-200 active:bg-gray-300";
                   let borderColor = "border-gray-300";
 
                   if (cell === "wall") {
-                    bgColor = "bg-gray-800 border-gray-700";
+                    bgColor = "bg-gray-800 border-gray-700 hover:bg-gray-700 active:bg-gray-600";
                     borderColor = "border-gray-600";
                   } else if (cell === "start" || cell === "start-goal") {
-                    bgColor = "bg-green-500 shadow-lg shadow-green-500/50";
+                    bgColor = "bg-green-500 shadow-lg shadow-green-500/50 hover:bg-green-400 active:bg-green-600";
                     borderColor = "border-green-400";
                   } else if (cell === "goal") {
-                    bgColor = "bg-red-500 shadow-lg shadow-red-500/50";
+                    bgColor = "bg-red-500 shadow-lg shadow-red-500/50 hover:bg-red-400 active:bg-red-600";
                     borderColor = "border-red-400";
                   }
 
@@ -668,8 +677,12 @@ export default function MazeGrid() {
                   return (
                     <div
                       key={`${r}-${c}`}
-                      className={`border cursor-pointer transition-all duration-200 rounded-sm ${bgColor} ${borderColor} hover:scale-110`}
+                      className={`border cursor-pointer transition-all duration-200 rounded-sm select-none ${bgColor} ${borderColor} hover:scale-105 active:scale-95 touch-manipulation`}
                       onClick={() => onCellClick(r, c)}
+                      style={{ 
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
                     />
                   );
                 })
@@ -678,22 +691,55 @@ export default function MazeGrid() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Legend - Show only on smaller screens */}
+      <div className="xl:hidden bg-black/20 backdrop-blur-sm border-t border-white/10 p-3 sm:p-4">
+        <h4 className="text-white font-semibold mb-2 text-sm">Legend</h4>
+        <div className="grid grid-cols-2 xs:grid-cols-5 gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-green-500 rounded border border-green-300"></div>
+            <span className="text-gray-300">Start</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-red-500 rounded border border-red-300"></div>
+            <span className="text-gray-300">Goal</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-gray-800 rounded border border-gray-600"></div>
+            <span className="text-gray-300">Wall</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-yellow-400 rounded"></div>
+            <span className="text-gray-300">Visited</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-purple-500 rounded"></div>
+            <span className="text-gray-300">Path</span>
+          </div>
+        </div>
+      </div>
       
       {/* Toast Notifications */}
       <Toaster
-        position="top-right"
+        position="top-center"
         toastOptions={{
           duration: 4000,
           style: {
             background: '#1f2937',
             color: '#f9fafb',
             border: '1px solid #374151',
+            fontSize: '14px',
+            maxWidth: '90vw',
+            padding: '12px 16px',
           },
           success: {
             style: {
               background: '#065f46',
               color: '#ecfdf5',
               border: '1px solid #10b981',
+              fontSize: '14px',
+              maxWidth: '90vw',
+              padding: '12px 16px',
             },
           },
           error: {
@@ -701,6 +747,9 @@ export default function MazeGrid() {
               background: '#7f1d1d',
               color: '#fef2f2',
               border: '1px solid #ef4444',
+              fontSize: '14px',
+              maxWidth: '90vw',
+              padding: '12px 16px',
             },
           },
         }}

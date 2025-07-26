@@ -5,10 +5,55 @@
   display: grid;
   grid-template-columns: repeat(20, 1fr);
   grid-template-rows: repeat(20, 1fr);
-  gap: 2px;
+  gap: 1px;
   width: 100%;
   height: 100%;
   aspect-ratio: 1;
+}
+
+/* Responsive gap adjustments */
+@media (min-width: 640px) {
+  .grid-cols-20 {
+    gap: 2px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid-cols-20 {
+    gap: 3px;
+  }
+}
+
+/* Touch optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .grid-cols-20 > div {
+    min-height: 20px;
+    min-width: 20px;
+  }
+  
+  /* Improve button touch targets */
+  button {
+    min-height: 44px;
+  }
+  
+  /* Remove hover effects on touch devices */
+  .grid-cols-20 > div:hover {
+    transform: none;
+  }
+}
+
+/* Additional responsive improvements */
+@media (max-width: 475px) {
+  .grid-cols-20 {
+    gap: 1px;
+  }
+}
+
+/* Smooth scrolling for mobile */
+@media (max-width: 1279px) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 /* Custom slider styling */
