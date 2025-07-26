@@ -3,9 +3,11 @@
 import { useEffect, useState, useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
+// Define the different types of cells in the grid
 type CellType = "free" | "wall" | "start" | "goal" | "start-goal";
 type Point = { row: number; col: number };
 
+// Define message types for WebSocket communication
 interface VisitMessage {
   type: "visit";
   node: Point;
@@ -27,24 +29,36 @@ interface ErrorMessage {
 
 type WebSocketMessage = VisitMessage | DoneMessage | ErrorMessage;
 
+// Grid dimensions - 20x20 maze
 const GRID_SIZE = 20;
 
 export default function MazeGrid() {
+  // Initialize grid with all cells as "free" (empty)
   const [grid, setGrid] = useState<CellType[][]>(
     Array(GRID_SIZE)
       .fill(null)
       .map(() => Array(GRID_SIZE).fill("free"))
   );
+  
+  // Current editing mode - what happens when user clicks a cell
   const [mode, setMode] = useState<"start" | "goal" | null>("start");
+  
+  // Sets to track which cells are part of the final path and visited during search
   const [pathCells, setPathCells] = useState<Set<string>>(new Set());
   const [visitedCells, setVisitedCells] = useState<Set<string>>(new Set());
+  
+  // Statistics for the pathfinding result
   const [pathLength, setPathLength] = useState(0);
   const [visitedCount, setVisitedCount] = useState(0);
+  
+  // Animation and solving state management
   const [isAnimating, setIsAnimating] = useState(false);
-  const [animationSpeed, setAnimationSpeed] = useState(100); // ms delay
+  const [animationSpeed, setAnimationSpeed] = useState(100); // milliseconds delay between steps
   const [solvingState, setSolvingState] = useState<
     "idle" | "solving" | "paused" | "completed"
   >("idle");
+  
+  // References for WebSocket connection and timeout management
   const wsRef = useRef<WebSocket | null>(null);
   const solveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const shouldIgnoreMessages = useRef(false);

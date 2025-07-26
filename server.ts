@@ -1,21 +1,23 @@
-// server.ts
+// WebSocket server for real-time maze pathfinding visualization
 import { createServer } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { astar, Point, AstarResult } from "./lib/astar";
 
+// Create HTTP server that handles both REST API and WebSocket connections
 const server = createServer((req, res) => {
-  // CORS headers for all requests
+  // Set CORS headers to allow requests from any origin
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+  // Handle preflight OPTIONS requests
   if (req.method === "OPTIONS") {
     res.writeHead(200);
     res.end();
     return;
   }
 
-  // Health check endpoint
+  // Simple health check endpoint to verify server is running
   if (req.url === "/health" && req.method === "GET") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(
@@ -24,19 +26,21 @@ const server = createServer((req, res) => {
     return;
   }
 
-  // POST /solve endpoint - REST API for pathfinding
+  // REST API endpoint for synchronous pathfinding (without real-time animation)
   if (req.url === "/solve" && req.method === "POST") {
     let body = "";
 
+    // Collect request body data
     req.on("data", (chunk) => {
       body += chunk.toString();
     });
 
+    // Process the request when all data is received
     req.on("end", () => {
       try {
         const { maze, start, goal } = JSON.parse(body);
 
-        // Validate input
+        // Validate that all required fields are present
         if (!maze || !start || !goal) {
           res.writeHead(400, { "Content-Type": "application/json" });
           res.end(
