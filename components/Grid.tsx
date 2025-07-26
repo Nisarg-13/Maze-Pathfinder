@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 
 type CellType = "free" | "wall" | "start" | "goal" | "start-goal";
 type Point = { row: number; col: number };
@@ -42,7 +42,9 @@ export default function MazeGrid() {
   const [visitedCount, setVisitedCount] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationSpeed, setAnimationSpeed] = useState(100); // ms delay
-  const [solvingState, setSolvingState] = useState<"idle" | "solving" | "paused" | "completed">("idle");
+  const [solvingState, setSolvingState] = useState<
+    "idle" | "solving" | "paused" | "completed"
+  >("idle");
   const wsRef = useRef<WebSocket | null>(null);
   const solveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const shouldIgnoreMessages = useRef(false);
@@ -58,7 +60,7 @@ export default function MazeGrid() {
     setVisitedCount(0);
     setIsAnimating(false);
     setSolvingState("idle");
-    
+
     // Reset the ignore flag
     shouldIgnoreMessages.current = false;
 
@@ -74,57 +76,59 @@ export default function MazeGrid() {
     if (solvingState === "solving") {
       // Pause the solving
       console.log("Pausing pathfinding...");
-      
+
       // Set flag to ignore incoming messages
       shouldIgnoreMessages.current = true;
-      
+
       // Stop the animation
       setIsAnimating(false);
       setSolvingState("paused");
-      
+
       // Clear the timeout
       if (solveTimeoutRef.current) {
         clearTimeout(solveTimeoutRef.current);
         solveTimeoutRef.current = null;
       }
-      
+
       // Send pause command to WebSocket server if connected
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.send(JSON.stringify({ type: "pause" }));
       }
-      
+
       console.log("Pathfinding paused by user");
     } else if (solvingState === "paused") {
       // Resume the solving
       console.log("Resuming pathfinding...");
-      
+
       if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
-        toast.error("WebSocket is not connected. Please check if the server is running.");
+        toast.error(
+          "WebSocket is not connected. Please check if the server is running."
+        );
         return;
       }
 
       // Send resume command to backend
       wsRef.current.send(JSON.stringify({ type: "resume" }));
-      
+
       // Reset flag to process incoming messages
       shouldIgnoreMessages.current = false;
-      
+
       // Resume the animation
       setIsAnimating(true);
       setSolvingState("solving");
-      
+
       // Set a new timeout
-      const timeoutDuration = Math.max(60000, (400 * animationSpeed) + 30000);
+      const timeoutDuration = Math.max(60000, 400 * animationSpeed + 30000);
       solveTimeoutRef.current = setTimeout(() => {
         console.log("Solve timeout reached, stopping animation");
         setIsAnimating(false);
         setSolvingState("paused");
         toast.error(
-          `Pathfinding timeout (${Math.round(timeoutDuration/1000)}s). Try faster animation or check maze design.`,
+          `Pathfinding timeout (${Math.round(timeoutDuration / 1000)}s). Try faster animation or check maze design.`,
           { duration: 6000 }
         );
       }, timeoutDuration);
-      
+
       console.log("Pathfinding resumed by user");
     }
   };
@@ -206,7 +210,10 @@ export default function MazeGrid() {
       console.log("WebSocket message received:", data);
 
       // Ignore messages if user has stopped the solving
-      if (shouldIgnoreMessages.current && (data.type === "visit" || data.type === "done")) {
+      if (
+        shouldIgnoreMessages.current &&
+        (data.type === "visit" || data.type === "done")
+      ) {
         console.log("Ignoring message because solving was stopped by user");
         return;
       }
@@ -225,7 +232,9 @@ export default function MazeGrid() {
           solveTimeoutRef.current = null;
         }
 
-        const pathKeys = data.path ? data.path.map((p: Point) => pointKey(p)) : [];
+        const pathKeys = data.path
+          ? data.path.map((p: Point) => pointKey(p))
+          : [];
         const visitedKeys = new Set(data.visitedNodes || []);
 
         setPathCells(new Set(pathKeys));
@@ -234,13 +243,17 @@ export default function MazeGrid() {
         setVisitedCount(data.visitedCount || 0);
         setIsAnimating(false);
         setSolvingState("completed");
-        
+
         // Show success or no path toast
         if (!data.error) {
           if ((data.pathLength || 0) === 0) {
-            toast.error("Path not found! No route exists between start and goal.");
+            toast.error(
+              "Path not found! No route exists between start and goal."
+            );
           } else {
-            toast.success(`Path found! Length: ${data.pathLength} steps, Visited: ${data.visitedCount || 0} nodes`);
+            toast.success(
+              `Path found! Length: ${data.pathLength} steps, Visited: ${data.visitedCount || 0} nodes`
+            );
           }
         }
 
@@ -266,33 +279,39 @@ export default function MazeGrid() {
     ws.onerror = (error) => {
       console.error("WS error", error);
       setIsAnimating(false);
-      
+
       // Clear timeout on error
       if (solveTimeoutRef.current) {
         clearTimeout(solveTimeoutRef.current);
         solveTimeoutRef.current = null;
       }
-      
-      toast.error("WebSocket connection error. Please check if the server is running.", {
-        duration: 5000
-      });
+
+      toast.error(
+        "WebSocket connection error. Please check if the server is running.",
+        {
+          duration: 5000,
+        }
+      );
     };
 
     ws.onclose = (event) => {
       console.log("WS closed", event.code, event.reason);
       setIsAnimating(false);
-      
+
       // Clear timeout on close
       if (solveTimeoutRef.current) {
         clearTimeout(solveTimeoutRef.current);
         solveTimeoutRef.current = null;
       }
-      
+
       // Only show toast if it wasn't a normal close
       if (event.code !== 1000) {
-        toast.error("WebSocket connection lost. Please check if the server is still running.", {
-          duration: 5000
-        });
+        toast.error(
+          "WebSocket connection lost. Please check if the server is still running.",
+          {
+            duration: 5000,
+          }
+        );
       }
     };
 
@@ -319,9 +338,12 @@ export default function MazeGrid() {
       }
 
       if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
-        toast.error("WebSocket is not connected. Please start the server with 'npm run server:dev'", {
-          duration: 5000
-        });
+        toast.error(
+          "WebSocket is not connected. Please start the server with 'npm run server:dev'",
+          {
+            duration: 5000,
+          }
+        );
         return;
       }
 
@@ -329,13 +351,15 @@ export default function MazeGrid() {
       const maze = grid.map((row) => row.map((cell) => cell === "wall"));
 
       // Send solve command with animation speed
-      wsRef.current.send(JSON.stringify({ 
-        type: "solve", 
-        maze, 
-        start, 
-        goal, 
-        animationSpeed 
-      }));
+      wsRef.current.send(
+        JSON.stringify({
+          type: "solve",
+          maze,
+          start,
+          goal,
+          animationSpeed,
+        })
+      );
 
       // Reset animation states for new solve
       setPathCells(new Set());
@@ -344,37 +368,37 @@ export default function MazeGrid() {
       setVisitedCount(0);
       setIsAnimating(true);
       setSolvingState("solving");
-      
+
       // Reset the ignore flag for new solve
       shouldIgnoreMessages.current = false;
 
       // Set a dynamic timeout based on animation speed
-      const timeoutDuration = Math.max(60000, (400 * animationSpeed) + 30000);
-      
+      const timeoutDuration = Math.max(60000, 400 * animationSpeed + 30000);
+
       solveTimeoutRef.current = setTimeout(() => {
         console.log("Solve timeout reached, stopping animation");
         setIsAnimating(false);
         setSolvingState("paused");
         toast.error(
-          `Pathfinding timeout (${Math.round(timeoutDuration/1000)}s). Try faster animation or check maze design.`,
+          `Pathfinding timeout (${Math.round(timeoutDuration / 1000)}s). Try faster animation or check maze design.`,
           { duration: 6000 }
         );
       }, timeoutDuration);
     } else if (solvingState === "paused") {
       // Restart from beginning
       console.log("Restarting pathfinding from beginning...");
-      
+
       // Send stop command to backend to reset its state
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.send(JSON.stringify({ type: "stop" }));
       }
-      
+
       // Clear current state
       setPathCells(new Set());
       setVisitedCells(new Set());
       setPathLength(0);
       setVisitedCount(0);
-      
+
       // Start fresh solve directly (don't use recursive call)
       const start = findCell("start");
       const goal = findCell("goal");
@@ -386,9 +410,12 @@ export default function MazeGrid() {
       }
 
       if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
-        toast.error("WebSocket is not connected. Please start the server with 'npm run server:dev'", {
-          duration: 5000
-        });
+        toast.error(
+          "WebSocket is not connected. Please start the server with 'npm run server:dev'",
+          {
+            duration: 5000,
+          }
+        );
         setSolvingState("idle");
         return;
       }
@@ -397,29 +424,31 @@ export default function MazeGrid() {
       const maze = grid.map((row) => row.map((cell) => cell === "wall"));
 
       // Send solve command with animation speed
-      wsRef.current.send(JSON.stringify({ 
-        type: "solve", 
-        maze, 
-        start, 
-        goal, 
-        animationSpeed 
-      }));
+      wsRef.current.send(
+        JSON.stringify({
+          type: "solve",
+          maze,
+          start,
+          goal,
+          animationSpeed,
+        })
+      );
 
       setIsAnimating(true);
       setSolvingState("solving");
-      
+
       // Reset the ignore flag for new solve
       shouldIgnoreMessages.current = false;
 
       // Set a dynamic timeout based on animation speed
-      const timeoutDuration = Math.max(60000, (400 * animationSpeed) + 30000);
-      
+      const timeoutDuration = Math.max(60000, 400 * animationSpeed + 30000);
+
       solveTimeoutRef.current = setTimeout(() => {
         console.log("Solve timeout reached, stopping animation");
         setIsAnimating(false);
         setSolvingState("paused");
         toast.error(
-          `Pathfinding timeout (${Math.round(timeoutDuration/1000)}s). Try faster animation or check maze design.`,
+          `Pathfinding timeout (${Math.round(timeoutDuration / 1000)}s). Try faster animation or check maze design.`,
           { duration: 6000 }
         );
       }, timeoutDuration);
@@ -467,7 +496,9 @@ export default function MazeGrid() {
                   }`}
                   onClick={() => setMode(mode === "start" ? null : "start")}
                 >
-                  <span className="hidden sm:inline lg:inline">Set Start Point</span>
+                  <span className="hidden sm:inline lg:inline">
+                    Set Start Point
+                  </span>
                   <span className="sm:hidden lg:hidden">Start</span>
                 </button>
 
@@ -479,7 +510,9 @@ export default function MazeGrid() {
                   }`}
                   onClick={() => setMode(mode === "goal" ? null : "goal")}
                 >
-                  <span className="hidden sm:inline lg:inline">Set Goal Point</span>
+                  <span className="hidden sm:inline lg:inline">
+                    Set Goal Point
+                  </span>
                   <span className="sm:hidden lg:hidden">Goal</span>
                 </button>
 
@@ -514,8 +547,8 @@ export default function MazeGrid() {
                   solvingState === "solving"
                     ? "bg-gray-600 text-gray-400 cursor-not-allowed border border-gray-500"
                     : solvingState === "paused"
-                    ? "bg-orange-600 text-white hover:bg-orange-700 border-2 border-orange-500 shadow-lg shadow-orange-500/25"
-                    : "bg-purple-600 text-white hover:bg-purple-700 border-2 border-purple-500 shadow-lg shadow-purple-500/25"
+                      ? "bg-orange-600 text-white hover:bg-orange-700 border-2 border-orange-500 shadow-lg shadow-orange-500/25"
+                      : "bg-purple-600 text-white hover:bg-purple-700 border-2 border-purple-500 shadow-lg shadow-purple-500/25"
                 }`}
               >
                 {solvingState === "solving" ? (
@@ -533,17 +566,19 @@ export default function MazeGrid() {
                   </>
                 )}
               </button>
-              
+
               {/* Stop/Resume Button */}
               <button
                 onClick={onToggleSolving}
-                disabled={solvingState === "idle" || solvingState === "completed"}
+                disabled={
+                  solvingState === "idle" || solvingState === "completed"
+                }
                 className={`w-full px-3 sm:px-4 lg:px-6 py-2 lg:py-3 rounded-lg font-semibold text-xs sm:text-sm lg:text-base transition-all duration-300 flex items-center justify-center gap-2 lg:gap-3 ${
                   solvingState === "solving"
                     ? "bg-red-600 text-white hover:bg-red-700 border-2 border-red-500 shadow-lg shadow-red-500/25"
                     : solvingState === "paused"
-                    ? "bg-green-600 text-white hover:bg-green-700 border-2 border-green-500 shadow-lg shadow-green-500/25"
-                    : "bg-gray-700 text-gray-500 cursor-not-allowed border border-gray-600"
+                      ? "bg-green-600 text-white hover:bg-green-700 border-2 border-green-500 shadow-lg shadow-green-500/25"
+                      : "bg-gray-700 text-gray-500 cursor-not-allowed border border-gray-600"
                 }`}
               >
                 {solvingState === "solving" ? (
@@ -564,7 +599,9 @@ export default function MazeGrid() {
 
             {/* Animation Speed Control */}
             <div className="bg-black/30 rounded-xl p-3 lg:p-4 border border-white/10">
-              <h4 className="text-white font-semibold mb-2 lg:mb-3 text-sm lg:text-base">Animation Speed</h4>
+              <h4 className="text-white font-semibold mb-2 lg:mb-3 text-sm lg:text-base">
+                Animation Speed
+              </h4>
               <div className="space-y-2 lg:space-y-3">
                 <div className="flex justify-between text-xs lg:text-sm text-gray-300">
                   <span>Fast</span>
@@ -582,7 +619,11 @@ export default function MazeGrid() {
                   className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer disabled:cursor-not-allowed slider"
                 />
                 <div className="text-xs text-gray-400">
-                  Max timeout: {Math.round(Math.max(60000, (400 * animationSpeed) + 30000) / 1000)}s
+                  Max timeout:{" "}
+                  {Math.round(
+                    Math.max(60000, 400 * animationSpeed + 30000) / 1000
+                  )}
+                  s
                 </div>
               </div>
             </div>
@@ -592,40 +633,54 @@ export default function MazeGrid() {
         {/* Center Grid Area */}
         <div className="flex-1 flex items-center justify-center p-3 sm:p-4 lg:p-6 min-h-0">
           <div className="w-full h-full flex items-center justify-center">
-            <div 
-              className="grid-cols-20 bg-gray-900/50 p-2 sm:p-3 lg:p-4 rounded-lg lg:rounded-xl touch-manipulation border border-white/10" 
-              style={{ 
-                width: 'min(calc(100vw - 30px), calc(100vh - 200px), 500px)', 
-                height: 'min(calc(100vw - 30px), calc(100vh - 200px), 500px)',
-                maxWidth: '100%',
-                maxHeight: '100%'
+            <div
+              className="grid-cols-20 bg-gray-900/50 p-2 sm:p-3 lg:p-4 rounded-lg lg:rounded-xl touch-manipulation border border-white/10"
+              style={{
+                width: "min(calc(100vw - 30px), calc(100vh - 200px), 500px)",
+                height: "min(calc(100vw - 30px), calc(100vh - 200px), 500px)",
+                maxWidth: "100%",
+                maxHeight: "100%",
               }}
             >
               {Array.from({ length: GRID_SIZE }, (_, r) =>
                 Array.from({ length: GRID_SIZE }, (_, c) => {
                   const cell = grid[r][c];
-                  let bgColor = "bg-gray-100 hover:bg-gray-200 active:bg-gray-300";
+                  let bgColor =
+                    "bg-gray-100 hover:bg-gray-200 active:bg-gray-300";
                   let borderColor = "border-gray-300";
 
                   if (cell === "wall") {
-                    bgColor = "bg-gray-800 border-gray-700 hover:bg-gray-700 active:bg-gray-600";
+                    bgColor =
+                      "bg-gray-800 border-gray-700 hover:bg-gray-700 active:bg-gray-600";
                     borderColor = "border-gray-600";
                   } else if (cell === "start" || cell === "start-goal") {
-                    bgColor = "bg-green-500 shadow-lg shadow-green-500/50 hover:bg-green-400 active:bg-green-600";
+                    bgColor =
+                      "bg-green-500 shadow-lg shadow-green-500/50 hover:bg-green-400 active:bg-green-600";
                     borderColor = "border-green-400";
                   } else if (cell === "goal") {
-                    bgColor = "bg-red-500 shadow-lg shadow-red-500/50 hover:bg-red-400 active:bg-red-600";
+                    bgColor =
+                      "bg-red-500 shadow-lg shadow-red-500/50 hover:bg-red-400 active:bg-red-600";
                     borderColor = "border-red-400";
                   }
 
                   // Animation overlays
                   if (visitedCells.has(`${r},${c}`)) {
-                    if (!pathCells.has(`${r},${c}`) && cell !== "start" && cell !== "goal" && cell !== "start-goal") {
+                    if (
+                      !pathCells.has(`${r},${c}`) &&
+                      cell !== "start" &&
+                      cell !== "goal" &&
+                      cell !== "start-goal"
+                    ) {
                       bgColor = "bg-yellow-400 shadow-lg shadow-yellow-400/50";
                     }
                   }
 
-                  if (pathCells.has(`${r},${c}`) && cell !== "start" && cell !== "goal" && cell !== "start-goal") {
+                  if (
+                    pathCells.has(`${r},${c}`) &&
+                    cell !== "start" &&
+                    cell !== "goal" &&
+                    cell !== "start-goal"
+                  ) {
                     bgColor = "bg-purple-500 shadow-lg shadow-purple-500/50";
                   }
 
@@ -634,9 +689,9 @@ export default function MazeGrid() {
                       key={`${r}-${c}`}
                       className={`border cursor-pointer transition-colors duration-200 rounded-sm select-none ${bgColor} ${borderColor} lg:hover:scale-105 active:scale-95 touch-manipulation`}
                       onClick={() => onCellClick(r, c)}
-                      style={{ 
-                        WebkitTapHighlightColor: 'transparent',
-                        touchAction: 'manipulation'
+                      style={{
+                        WebkitTapHighlightColor: "transparent",
+                        touchAction: "manipulation",
                       }}
                     />
                   );
@@ -657,8 +712,12 @@ export default function MazeGrid() {
               <div className="space-y-4">
                 <div className="bg-black/30 rounded-xl p-4 border border-white/10">
                   <p className="text-gray-400 text-sm mb-1">Path Length</p>
-                  <p className={`font-bold text-2xl ${pathLength === 0 && solvingState === "completed" ? "text-red-400" : "text-cyan-400"}`}>
-                    {pathLength === 0 && solvingState === "completed" ? "Not Found" : pathLength}
+                  <p
+                    className={`font-bold text-2xl ${pathLength === 0 && solvingState === "completed" ? "text-red-400" : "text-cyan-400"}`}
+                  >
+                    {pathLength === 0 && solvingState === "completed"
+                      ? "Not Found"
+                      : pathLength}
                   </p>
                 </div>
                 <div className="bg-black/30 rounded-xl p-4 border border-white/10">
@@ -706,18 +765,20 @@ export default function MazeGrid() {
         <div className="flex gap-3 mb-4">
           <div className="flex-1 text-center bg-black/30 rounded-lg px-3 py-2 border border-white/10">
             <p className="text-gray-400 text-xs">Path Length</p>
-            <p className={`font-bold text-lg ${pathLength === 0 && solvingState === "completed" ? "text-red-400" : "text-cyan-400"}`}>
-              {pathLength === 0 && solvingState === "completed" ? "Not Found" : pathLength}
+            <p
+              className={`font-bold text-lg ${pathLength === 0 && solvingState === "completed" ? "text-red-400" : "text-cyan-400"}`}
+            >
+              {pathLength === 0 && solvingState === "completed"
+                ? "Not Found"
+                : pathLength}
             </p>
           </div>
           <div className="flex-1 text-center bg-black/30 rounded-lg px-3 py-2 border border-white/10">
             <p className="text-gray-400 text-xs">Visited Nodes</p>
-            <p className="text-yellow-400 font-bold text-lg">
-              {visitedCount}
-            </p>
+            <p className="text-yellow-400 font-bold text-lg">{visitedCount}</p>
           </div>
         </div>
-        
+
         {/* Mobile Legend */}
         <h4 className="text-white font-semibold mb-2 text-sm">Legend</h4>
         <div className="grid grid-cols-2 xs:grid-cols-5 gap-2 text-xs">
@@ -743,38 +804,38 @@ export default function MazeGrid() {
           </div>
         </div>
       </div>
-      
+
       {/* Toast Notifications */}
       <Toaster
         position="top-center"
         toastOptions={{
           duration: 4000,
           style: {
-            background: '#1f2937',
-            color: '#f9fafb',
-            border: '1px solid #374151',
-            fontSize: '14px',
-            maxWidth: '90vw',
-            padding: '12px 16px',
+            background: "#1f2937",
+            color: "#f9fafb",
+            border: "1px solid #374151",
+            fontSize: "14px",
+            maxWidth: "90vw",
+            padding: "12px 16px",
           },
           success: {
             style: {
-              background: '#065f46',
-              color: '#ecfdf5',
-              border: '1px solid #10b981',
-              fontSize: '14px',
-              maxWidth: '90vw',
-              padding: '12px 16px',
+              background: "#065f46",
+              color: "#ecfdf5",
+              border: "1px solid #10b981",
+              fontSize: "14px",
+              maxWidth: "90vw",
+              padding: "12px 16px",
             },
           },
           error: {
             style: {
-              background: '#7f1d1d',
-              color: '#fef2f2',
-              border: '1px solid #ef4444',
-              fontSize: '14px',
-              maxWidth: '90vw',
-              padding: '12px 16px',
+              background: "#7f1d1d",
+              color: "#fef2f2",
+              border: "1px solid #ef4444",
+              fontSize: "14px",
+              maxWidth: "90vw",
+              padding: "12px 16px",
             },
           },
         }}

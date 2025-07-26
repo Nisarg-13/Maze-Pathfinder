@@ -38,18 +38,18 @@
     min-height: 15px;
     min-width: 15px;
   }
-  
+
   /* Improve button touch targets */
   button {
     min-height: 44px;
   }
-  
+
   /* Remove hover effects on touch devices */
   .grid-cols-20 > div:hover {
     transform: none !important;
     scale: 1 !important;
   }
-  
+
   /* Disable zoom on touch */
   .grid-cols-20 > div:active {
     transform: none !important;
@@ -62,7 +62,7 @@
   .grid-cols-20 {
     gap: 1px;
   }
-  
+
   .grid-cols-20 > div {
     min-height: 12px;
     min-width: 12px;
@@ -74,7 +74,7 @@
   html {
     scroll-behavior: smooth;
   }
-  
+
   /* Prevent zoom on double tap */
   * {
     touch-action: manipulation;
@@ -115,4 +115,3 @@
   transform: scale(1.1);
   z-index: 10;
 }
-

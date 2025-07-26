@@ -13,9 +13,9 @@ export type AstarResult = {
 
 const directions: Point[] = [
   { row: -1, col: 0 }, // up
-  { row: 1, col: 0 },  // down
+  { row: 1, col: 0 }, // down
   { row: 0, col: -1 }, // left
-  { row: 0, col: 1 },  // right
+  { row: 0, col: 1 }, // right
 ];
 
 function heuristic(a: Point, b: Point): number {
@@ -26,9 +26,9 @@ function heuristic(a: Point, b: Point): number {
 // Removed unused helper functions
 
 export function astar(
-  maze: boolean[][], 
-  start: Point, 
-  goal: Point, 
+  maze: boolean[][],
+  start: Point,
+  goal: Point,
   onVisit?: (node: Point) => void
 ): AstarResult {
   const numRows = maze.length;
@@ -78,10 +78,10 @@ export function astar(
       }
       path.push(start);
       path.reverse();
-      return { 
-        path, 
-        visitedCount: visitedNodes.size, 
-        visitedNodes: Array.from(visitedNodes) 
+      return {
+        path,
+        visitedCount: visitedNodes.size,
+        visitedNodes: Array.from(visitedNodes),
       };
     }
 
@@ -94,10 +94,14 @@ export function astar(
       const tentativeGScore = gScore[current.row][current.col] + 1;
 
       if (tentativeGScore < gScore[neighborRow][neighborCol]) {
-        cameFrom.set(`${neighborRow},${neighborCol}`, `${current.row},${current.col}`);
+        cameFrom.set(
+          `${neighborRow},${neighborCol}`,
+          `${current.row},${current.col}`
+        );
         gScore[neighborRow][neighborCol] = tentativeGScore;
         fScore[neighborRow][neighborCol] =
-          tentativeGScore + heuristic({ row: neighborRow, col: neighborCol }, goal);
+          tentativeGScore +
+          heuristic({ row: neighborRow, col: neighborCol }, goal);
 
         if (
           !openSet.some((n) => n.row === neighborRow && n.col === neighborCol)
@@ -109,9 +113,9 @@ export function astar(
   }
 
   // No path found
-  return { 
-    path: [], 
-    visitedCount: visitedNodes.size, 
-    visitedNodes: Array.from(visitedNodes) 
+  return {
+    path: [],
+    visitedCount: visitedNodes.size,
+    visitedNodes: Array.from(visitedNodes),
   };
 }

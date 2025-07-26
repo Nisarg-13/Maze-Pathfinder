@@ -1,19 +1,30 @@
-export default {
-  testEnvironment: 'node',
-  preset: 'ts-jest/presets/default-esm',
-  extensionsToTreatAsEsm: ['.ts'],
-  globals: {
-    'ts-jest': {
-      useESM: true
-    }
+/** @type {import('jest').Config} */
+const config = {
+  preset: "ts-jest",
+  testEnvironment: "jsdom",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  testMatch: ["**/__tests__/**/*.(ts|tsx|js)", "**/*.(test|spec).(ts|tsx|js)"],
+  collectCoverageFrom: [
+    "lib/**/*.(ts|tsx)",
+    "components/**/*.(ts|tsx)",
+    "app/**/*.(ts|tsx)",
+    "!**/*.d.ts",
+    "!**/node_modules/**",
+  ],
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/$1",
   },
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    "^.+\\.(ts|tsx)$": [
+      "ts-jest",
+      {
+        tsconfig: {
+          jsx: "react-jsx",
+        },
+      },
+    ],
   },
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1'
-  },
-  transformIgnorePatterns: [
-    'node_modules/(?!(.*\\.mjs$))'
-  ]
-}; 
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
+};
+
+export default config;
